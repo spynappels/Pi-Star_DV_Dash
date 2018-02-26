@@ -702,7 +702,7 @@ if ($_SERVER["PHP_SELF"] == "/admin/configure.php") {
 
 	// Set YSF2DMR ID
 	if (empty($_POST['ysf2dmrId']) != TRUE ) {
-	  $newPostYsf2DmrId = preg_replace('/[^0-9]/', '', $_POST['ysf2dmrId']);	
+	  $newPostYsf2DmrId = preg_replace('/[^0-9]/', '', $_POST['ysf2dmrId']);
 	  $configysf2dmr['DMR Network']['Id'] = $newPostYsf2DmrId;
 	}
 
@@ -1120,7 +1120,7 @@ if ($_SERVER["PHP_SELF"] == "/admin/configure.php") {
           if (escapeshellcmd($_POST['MMDVMModeP25']) == 'ON' )  { $configmmdvm['P25']['Enable'] = "1"; $configmmdvm['P25 Network']['Enable'] = "1"; }
           if (escapeshellcmd($_POST['MMDVMModeP25']) == 'OFF' ) { $configmmdvm['P25']['Enable'] = "0"; $configmmdvm['P25 Network']['Enable'] = "0"; }
 	}
-	
+
 	// Set MMDVMHost NXDN Mode
 	if (empty($_POST['MMDVMModeNXDN']) != TRUE ) {
           if (escapeshellcmd($_POST['MMDVMModeNXDN']) == 'ON' )  { $configmmdvm['NXDN']['Enable'] = "1"; $configmmdvm['NXDN Network']['Enable'] = "1"; }
@@ -1431,6 +1431,11 @@ if ($_SERVER["PHP_SELF"] == "/admin/configure.php") {
           echo '<script type="text/javascript">setTimeout(function() { window.location=window.location;},5000);</script>';
           die();
 	}
+  elseif (fopen('/root/DMRGateway.ini','r')) { //Checks for presence of custom DMRGateway.ini file
+      exec('sudo cp /root/DMRGateway.ini /etc/dmrgateway');// Copy custom file to /etc/dmrgateway
+      exec('sudo chmod 644 /etc/dmrgateway');
+      exec('sudo chown root:root /etc/dmrgateway');
+  }
 	else {
 	        $success = fwrite($handledmrGWconfig, $dmrgwContent);
 	        fclose($handledmrGWconfig);
@@ -2286,7 +2291,7 @@ $ysfHosts = fopen("/usr/local/etc/YSFHosts.txt", "r"); ?>
     </tr>
     <tr>
       <td align="left"><a class="tooltip2" href="#">DMR TG:<span><b>YSF2DMR TG</b>Enter your DMR TG here</span></a></td>
-      <td align="left" colspan="2"><input type="text" name="ysf2dmrTg" size="13" maxlength="7" value="<?php if (isset($configysf2dmr['DMR Network']['StartupDstId'])) { echo $configysf2dmr['DMR Network']['StartupDstId']; } ?>" /></td>  
+      <td align="left" colspan="2"><input type="text" name="ysf2dmrTg" size="13" maxlength="7" value="<?php if (isset($configysf2dmr['DMR Network']['StartupDstId'])) { echo $configysf2dmr['DMR Network']['StartupDstId']; } ?>" /></td>
     </tr>
     <?php } ?>
     </table>
@@ -2343,7 +2348,7 @@ $p25Hosts = fopen("/usr/local/etc/P25Hosts.txt", "r");
     </table>
 	<div><input type="button" value="<?php echo $lang['apply'];?>" onclick="submitform()" /><br /><br /></div>
 <?php } ?>
-	
+
 <?php if (file_exists('/etc/dstar-radio.mmdvmhost') && $configmmdvm['NXDN Network']['Enable'] == 1) { ?>
 	<div><b><?php echo $lang['nxdn_config'];?></b></div>
     <table>
@@ -2366,7 +2371,7 @@ $p25Hosts = fopen("/usr/local/etc/P25Hosts.txt", "r");
     </table>
 	<div><input type="button" value="<?php echo $lang['apply'];?>" onclick="submitform()" /><br /><br /></div>
 <?php } ?>
-	
+
 	<div><b><?php echo $lang['fw_config'];?></b></div>
     <table>
     <tr>
